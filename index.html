@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Écrire un Article - 01mana.com</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Découvrez 01mana.com : là où les vendeurs et acheteurs interagissent</h1>
+
+        <img src="affiche.PNG" alt="Image de description de l'article" class="article-image">
+
+        <div class="article-content">
+            <p>Dans le monde numérique d’aujourd’hui, les consommateurs ne cherchent plus seulement un simple marché en ligne. Ils recherchent des connexions profondes avec les marques, des expériences d'achat fluides et des plateformes qui inspirent confiance et valeur. C'est là qu'intervient 01mana.com, une plateforme révolutionnaire conçue pour transformer la manière dont les entreprises et les clients interagissent.</p>
+
+            <div class="grid-container">
+                <div>
+                    <h2>1. Un Marché Unique qui Va Au-Delà de la Simple Vente</h2>
+                    <p>Bien qu'01mana.com propose un espace où les utilisateurs peuvent explorer et acheter des produits, la plateforme va bien plus loin. Son véritable atout réside dans la possibilité de se connecter personnellement aux entreprises. Chaque entreprise possède une page dédiée où elle peut non seulement vendre ses produits, mais aussi partager des recommandations, des actualités et du contenu personnalisé.</p>
+                </div>
+
+                <div>
+                    <h2>2. La Confiance à Chaque Achat</h2>
+                    <p>Sur 01mana.com, chaque produit est accompagné de détails précis et de retours clients, vous assurant ainsi de prendre des décisions éclairées. De plus, vous bénéficiez de fonctionnalités telles que des retours gratuits, des paiements sécurisés, et une assistance 24/7, pour une expérience d'achat sans tracas.</p>
+                </div>
+
+                <div>
+                    <h2>3. Une Plateforme Gagnant-Gagnant pour les Entreprises et les Clients</h2>
+                    <p>Pour les entreprises, 01mana.com offre bien plus qu'une simple vitrine de vente. C'est une opportunité d’établir des relations durables avec les clients. Grâce aux retours en temps réel, les marques peuvent adapter leurs offres, améliorer leurs produits et offrir une expérience personnalisée.</p>
+                </div>
+
+                <div>
+                    <h2>4. Une Expérience Simple et Fluide</h2>
+                    <p>Dès que vous arrivez sur 01mana.com, tout est conçu pour rendre votre expérience agréable et intuitive. Que vous exploriez les produits, que vous laissiez un avis ou que vous interagissiez avec une marque, la plateforme est à la fois moderne et fonctionnelle, idéale pour découvrir, interagir, et acheter.</p>
+                </div>
+
+                <div class="centered">
+                    <h2>5. Rejoignez le Mouvement — Soyez à l'Avant-Garde</h2>
+                    <p>Alors que de plus en plus d'entreprises migrent vers le numérique, 01mana.com établit la norme pour l’e-commerce moderne. Que vous soyez une entreprise cherchant à étendre votre portée ou un client à la recherche d'une expérience d'achat personnalisée, 01mana.com est la destination incontournable.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn">Essayez 01mana.com Dès Maintenant</button>
+    </div>
+
+    <button id="downloadPdf">Télécharger en PDF</button>
+
+</body>
+
+<script>
+    document.getElementById('downloadPdf').addEventListener('click', function () {
+      // Sélectionne l'élément à convertir en PDF
+      var element = document.querySelector('.container'); // Choisissez l'élément que vous souhaitez exporter
+  
+      // Utilise html2canvas pour capturer le contenu HTML sous forme de canvas
+      html2canvas(element, {
+        scale: 2 // Augmente la résolution pour une meilleure qualité
+      }).then(function (canvas) {
+        // Obtenir la dimension du canvas
+        var imgData = canvas.toDataURL('image/png');
+        var imgWidth = 210; // Largeur d'une page A4 (210mm)
+        var pageHeight = 295; // Hauteur d'une page A4 (297mm)
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var heightLeft = imgHeight;
+        var doc = new jspdf.jsPDF('p', 'mm', 'a4');
+        var position = 0;
+  
+        // Ajoute l'image dans le PDF
+        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+  
+        // Si le contenu dépasse une page, crée une autre page
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          doc.addPage();
+          doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+  
+        // Télécharge le PDF
+        doc.save('article.pdf');
+      });
+    });
+  </script>
+  
+
+</html>
