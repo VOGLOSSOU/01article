@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 </head>
 
@@ -63,28 +63,31 @@
   
       // Utilise html2canvas pour capturer le contenu HTML sous forme de canvas
       html2canvas(element, {
-        scale: 2 // Augmente la résolution pour une meilleure qualité
-      }).then(function (canvas) {
+        scale: 2, // Augmente la résolution pour une meilleure qualité
+        useCORS: true
+      }).then(function(canvas) {
         // Obtenir la dimension du canvas
         var imgData = canvas.toDataURL('image/png');
-        var imgWidth = 210; // Largeur d'une page A4 (210mm)
-        var pageHeight = 295; // Hauteur d'une page A4 (297mm)
-        var imgHeight = canvas.height * imgWidth / canvas.width;
-        var heightLeft = imgHeight;
+        var pageWidth = 210; // Largeur d'une page A4 (210mm)
+        var pageHeight = 297; // Hauteur d'une page A4 (297mm)
+        var imgWidth = canvas.width;
+        var imgHeight = canvas.height;
         var doc = new jspdf.jsPDF('p', 'mm', 'a4');
-        var position = 0;
-  
-        // Ajoute l'image dans le PDF
-        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-  
-        // Si le contenu dépasse une page, crée une autre page
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          doc.addPage();
-          doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
+
+        // Calculer le ratio pour ajuster à la page
+        var widthRatio = pageWidth / imgWidth;
+        var heightRatio = pageHeight / imgHeight;
+        var ratio = Math.min(widthRatio, heightRatio);
+
+        // Appliquer le ratio pour ajuster la taille
+        imgWidth *= ratio;
+        imgHeight *= ratio;
+
+        // Centrer horizontalement
+        var x = (pageWidth - imgWidth) / 2;
+
+        // Ajoute l'image centrée dans le PDF
+        doc.addImage(imgData, 'PNG', x, 0, imgWidth, imgHeight);
   
         // Télécharge le PDF
         doc.save('article.pdf');
